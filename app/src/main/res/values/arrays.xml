@@ -27,4 +27,14 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
+    <string-array name="accent_entries">
+        <item>@string/settings_accent_teal</item>
+        <item>@string/settings_accent_sunrise</item>
+        <item>@string/settings_accent_ocean</item>
+    </string-array>
+    <string-array name="accent_values">
+        <item>teal</item>
+        <item>sunrise</item>
+        <item>ocean</item>
+    </string-array>
 </resources>

@@ -2,138 +2,247 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorSurface"
+        android:title="@string/dashboard_toolbar_title"
+        app:titleCentered="false"
+        app:titleTextColor="?attr/colorOnSurface" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:clipToPadding="false"
         android:padding="@dimen/padding_large">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/textSmokeFreeDays"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-                android:text="0" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/labelSmokeFree"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/label_smoke_free_days"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_large">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStreak"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_medium">
+                android:layout_marginBottom="@dimen/padding_medium">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/padding_medium">
+                    android:padding="@dimen/padding_large">
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/textMoneySaved"
-                        android:layout_width="match_parent"
+                        android:id="@+id/textSmokeFreeDays"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.DisplayMedium" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_money_saved" />
+                        android:text="@string/label_smoke_free_days"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/textCigsAvoided"
-                        android:layout_width="match_parent"
+                        android:id="@+id/textQuitMode"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/padding_small"
-                        android:text="0"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_cigs_avoided" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/textMinutesRecovered"
-                        android:layout_width="match_parent"
+                        android:id="@+id/textCravingsLogged"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/padding_small"
-                        android:text="0"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_minutes_recovered" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/padding_large"
-                android:weightSum="2">
+                android:layout_marginBottom="@dimen/padding_medium">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonLogCraving"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/action_log_craving" />
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_medium">
 
-                <View
-                    android:layout_width="@dimen/padding_small"
-                    android:layout_height="1dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonIntervention"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="0dp"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/textMoneySaved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.TitleLarge" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_money_saved"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/padding_medium"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/textCigsAvoided"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.TitleLarge" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_cigs_avoided"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/padding_medium"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/textMinutesRecovered"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.TitleLarge" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_minutes_recovered"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardMilestone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_large">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/action_open_intervention" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_large">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonHistory"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/textNextMilestone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.TitleMedium" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/textMilestoneEta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/padding_small"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressMilestone"
+                        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/padding_medium"
+                        app:indicatorColor="?attr/colorPrimary"
+                        app:trackColor="?attr/colorOutline"
+                        app:trackThickness="6dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/textMilestoneMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/padding_small"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_actions_title"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.TitleSmall" />
+
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_medium"
-                android:text="@string/action_view_history" />
+                android:overScrollMode="never">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonAchievements"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_small"
-                android:text="@string/action_view_achievements" />
+                <LinearLayout
+                    android:id="@+id/layoutQuickActions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonExport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_small"
-                android:text="@string/action_export" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLogCraving"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_marginEnd="@dimen/padding_small"
+                        android:text="@string/dashboard_action_log" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_small"
-                android:text="@string/action_open_settings" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipIntervention"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_marginEnd="@dimen/padding_small"
+                        android:text="@string/dashboard_action_relax" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipHistory"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_marginEnd="@dimen/padding_small"
+                        android:text="@string/dashboard_action_history" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAchievements"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_marginEnd="@dimen/padding_small"
+                        android:text="@string/dashboard_action_achievements" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipExport"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_marginEnd="@dimen/padding_small"
+                        android:text="@string/dashboard_action_export" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSettings"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:text="@string/dashboard_action_settings" />
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

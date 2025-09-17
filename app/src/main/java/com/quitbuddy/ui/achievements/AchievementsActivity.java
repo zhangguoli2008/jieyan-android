@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.quitbuddy.R;
 import com.quitbuddy.data.repo.QuitBuddyRepository;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.quitbuddy.ui.ThemeManager;
 
 public class AchievementsActivity extends AppCompatActivity {
 
@@ -18,6 +20,11 @@ public class AchievementsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievements);
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24);
+        ThemeManager.tintToolbar(toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
         RecyclerView list = findViewById(R.id.listAchievements);
         adapter = new AchievementsAdapter();
         list.setLayoutManager(new LinearLayoutManager(this));

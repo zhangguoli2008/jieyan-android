@@ -3,15 +3,115 @@
     <string name="app_name">QuitBuddy</string>
     <string name="action_save">保存</string>
     <string name="action_cancel">取消</string>
+    <string name="action_confirm">确认</string>
+    <string name="action_close">关闭</string>
+
     <string name="dashboard_title">今日进度</string>
+    <string name="dashboard_toolbar_title">我的无烟旅程</string>
+    <string name="dashboard_next_milestone">下一里程碑 · %1$s</string>
+    <string name="dashboard_milestone_eta">预计达成：%1$s</string>
+    <string name="dashboard_milestone_completed">所有里程碑已解锁，继续保持！</string>
+    <string name="dashboard_mode_label">当前模式：%1$s</string>
+    <string name="dashboard_actions_title">快捷操作</string>
+    <string name="dashboard_action_log">记录</string>
+    <string name="dashboard_action_relax">放松</string>
+    <string name="dashboard_action_history">历史</string>
+    <string name="dashboard_action_achievements">成就</string>
+    <string name="dashboard_action_export">导出</string>
+    <string name="dashboard_action_settings">设置</string>
+    <string name="dashboard_milestone_remaining">还差 %1$d 天</string>
+    <string name="dashboard_cravings_logged">已记录 %1$d 次渴求</string>
+
     <string name="onboarding_title">开始你的计划</string>
+    <string name="onboarding_section_plan">制定戒烟节奏</string>
+    <string name="onboarding_section_reminder">每日提醒</string>
+    <string name="onboarding_mode_label">选择戒断模式</string>
+    <string name="onboarding_mode_cold_turkey">冷火鸡</string>
+    <string name="onboarding_mode_gradual">循序渐进</string>
+    <string name="onboarding_mode_hint">冷火鸡：立刻停止；循序渐进：逐步减少。</string>
+    <string name="onboarding_hint_start_date">起始日</string>
+    <string name="onboarding_hint_baseline">每日基线（支）</string>
+    <string name="onboarding_hint_cigs">每包支数</string>
+    <string name="onboarding_hint_price">单包价格</string>
+    <string name="onboarding_reminder_primary">提醒时段 1</string>
+    <string name="onboarding_reminder_secondary">提醒时段 %1$d (可选)</string>
+    <string name="onboarding_summary_title">确认计划</string>
+    <string name="onboarding_summary_message">开始日期：%1$s
+模式：%2$s
+每日基线：%3$d 支
+提醒时间：%4$s</string>
+    <string name="onboarding_error_mode">请选择戒断模式</string>
+
     <string name="craving_log_title">记录渴求</string>
-    <string name="craving_history_title">历史记录</string>
+    <string name="craving_history_title">渴求历史</string>
+    <string name="craving_history_search_hint">搜索备注或触发因素</string>
+    <string name="craving_history_filter_triggers">触发因素</string>
+    <string name="craving_history_filter_all">全部</string>
+    <string name="craving_history_filter_stress">压力</string>
+    <string name="craving_history_filter_social">社交</string>
+    <string name="craving_history_filter_after_meal">饭后</string>
+    <string name="craving_history_filter_other">其他</string>
+    <string name="craving_history_filter_smoked">吸烟情况</string>
+    <string name="craving_history_filter_smoked_all">全部</string>
+    <string name="craving_history_filter_smoked_yes">已吸烟</string>
+    <string name="craving_history_filter_smoked_no">成功抵抗</string>
+    <string name="craving_history_empty">暂无匹配的渴求记录</string>
+
     <string name="micro_intervention_title">微干预工具</string>
+    <string name="micro_intervention_breath_inhale">吸气 4 秒</string>
+    <string name="micro_intervention_breath_hold">屏息 4 秒</string>
+    <string name="micro_intervention_breath_exhale">呼气 4 秒</string>
+    <string name="micro_intervention_breath_rest">停留 4 秒</string>
+    <string name="micro_intervention_breath_complete">完成！为自己点赞</string>
+    <string name="micro_intervention_delay_complete">完成！做点开心的事吧</string>
+    <string name="micro_intervention_delay_snackbar">等待已经结束，去奖励自己吧！</string>
+    <string name="micro_intervention_action_pause">暂停</string>
+    <string name="micro_intervention_action_start">开始</string>
+    <string name="micro_intervention_action_reset">重置</string>
+    <string name="micro_intervention_progress_label">剩余 %1$s</string>
+    <string name="micro_intervention_action_shuffle">换一个</string>
+
     <string name="settings_title">设置</string>
+    <string name="settings_section_appearance">外观</string>
+    <string name="settings_section_notifications">提醒与专注</string>
+    <string name="settings_section_data">数据与隐私</string>
+    <string name="settings_section_about">关于与支持</string>
+    <string name="settings_quit_mode_title">当前戒断模式</string>
+    <string name="settings_quit_mode_empty">尚未制定计划</string>
+    <string name="settings_accent_title">强调色</string>
+    <string name="settings_accent_summary">选择喜欢的界面强调色</string>
+    <string name="settings_accent_teal">薄荷绿</string>
+    <string name="settings_accent_sunrise">日出橙</string>
+    <string name="settings_accent_ocean">海湾蓝</string>
+    <string name="settings_theme_title">主题模式</string>
+    <string name="settings_notifications_enable">每日提醒</string>
+    <string name="settings_notifications_summary_on">按设定时间提醒你保持无烟</string>
+    <string name="settings_notifications_summary_off">提醒已关闭</string>
+    <string name="settings_notifications_time">提醒时间</string>
+    <string name="settings_notifications_time_summary">当前：%1$s</string>
+    <string name="settings_data_export_title">导出数据</string>
+    <string name="settings_data_export_summary">分享 CSV 统计与记录</string>
+    <string name="settings_data_clear_title">清除渴求记录</string>
+    <string name="settings_data_clear_summary">移除本地存档前请谨慎操作</string>
+    <string name="settings_privacy_title">隐私政策</string>
+    <string name="settings_support_title">联系我们</string>
+    <string name="settings_support_summary">发送邮件获取帮助</string>
+    <string name="settings_clear_confirm">确定要清除所有渴求记录吗？此操作不可撤销。</string>
+    <string name="settings_clear_success">记录已清除</string>
+    <string name="settings_support_email">support@quitbuddy.app</string>
+    <string name="settings_privacy_url">https://quitbuddy.app/privacy</string>
+
     <string name="achievements_title">成就</string>
+    <string name="achievements_celebration_title">恭喜达成里程碑</string>
+    <string name="achievements_celebration_message">你已经坚持 %1$d 天无烟，这是伟大的里程碑！继续保持，下一站更精彩。</string>
+    <string name="achievements_celebration_button">继续加油</string>
+
     <string name="export_title">数据导出</string>
+    <string name="export_share_title">分享渴求记录</string>
+    <string name="export_share_text">这是我在 QuitBuddy 中导出的戒烟记录，一起来互相打气吧！</string>
+
     <string name="error_missing_fields">请填写所有必填项</string>
+    <string name="onboarding_error_number">请输入大于 0 的数值</string>
     <string name="msg_plan_saved">计划已保存</string>
     <string name="msg_craving_saved">渴求已记录</string>
     <string name="label_money_saved">节省金额</string>
@@ -32,6 +132,7 @@
     <string name="label_delay">延迟计时</string>
     <string name="label_substitution">替代建议</string>
     <string name="msg_export_success">导出成功：%1$s</string>
+    <string name="msg_export_shared">已打开分享面板</string>
     <string name="msg_export_failed">导出失败</string>
     <string name="msg_permission_required">请授予通知权限以确保提醒</string>
 </resources>

@@ -23,6 +23,9 @@ public class QuitPlanEntity {
     @NonNull
     public List<String> reminderTimes = new ArrayList<>();
 
+    public static final String MODE_COLD_TURKEY = "coldTurkey";
+    public static final String MODE_GRADUAL = "gradual";
+
     public QuitPlanEntity() {
     }
 

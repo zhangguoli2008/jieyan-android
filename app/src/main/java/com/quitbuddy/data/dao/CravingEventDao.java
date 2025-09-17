@@ -30,4 +30,13 @@ public interface CravingEventDao {
 
     @Query("SELECT COUNT(*) FROM craving_event WHERE didSmoke = 1 AND timestamp BETWEEN :start AND :end")
     int countSmokedBetween(Date start, Date end);
+
+    @Query("DELETE FROM craving_event")
+    void clearAll();
+
+    @Query("SELECT * FROM craving_event WHERE (:trigger IS NULL OR trigger = :trigger) " +
+            "AND (:didSmoke IS NULL OR didSmoke = :didSmoke) " +
+            "AND (:query IS NULL OR trigger LIKE '%' || :query || '%' OR note LIKE '%' || :query || '%') " +
+            "ORDER BY timestamp DESC")
+    LiveData<List<CravingEventEntity>> observeFiltered(String trigger, Integer didSmoke, String query);
 }

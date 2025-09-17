@@ -1,13 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_medium">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listCravings"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorSurface"
+        android:title="@string/craving_history_title"
+        app:titleTextColor="?attr/colorOnSurface" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_medium">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/craving_history_filter_triggers"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/groupTriggers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_small"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTriggerAll"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_all" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTriggerStress"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_stress" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTriggerSocial"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_social" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTriggerAfterMeal"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_after_meal" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTriggerOther"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_other" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:text="@string/craving_history_filter_smoked"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/groupSmoked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_small"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSmokedAll"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_smoked_all" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSmokedYes"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_smoked_yes" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSmokedNo"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:text="@string/craving_history_filter_smoked_no" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listCravings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:layout_weight="1" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/padding_large"
+            android:text="@string/craving_history_empty"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
