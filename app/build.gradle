@@ -31,15 +31,15 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    buildFeatures {
-        viewBinding true
-    }
-
-    packagingOptions {
-        resources {
-            excludes += ['/META-INF/{AL2.0,LGPL2.1}']
-        }
-    }
+//    buildFeatures {
+//        viewBinding true
+//    }
+//
+//    packagingOptions {
+//        resources {
+//            excludes += ['/META-INF/{AL2.0,LGPL2.1}']
+//        }
+//    }
 }
 
 dependencies {
@@ -56,7 +56,8 @@ dependencies {
     annotationProcessor 'androidx.room:room-compiler:2.6.1'
     implementation 'androidx.work:work-runtime:2.9.1'
     implementation 'androidx.preference:preference:1.2.1'
-
+    implementation 'com.amazon.ion:ion-java:1.10.3'
+//    implementation 'com.amazon.ion:ion-java:1.+' // 或者一个具体的版本号
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

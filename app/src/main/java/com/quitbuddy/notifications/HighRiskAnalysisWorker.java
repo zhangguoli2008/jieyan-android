@@ -1,5 +1,7 @@
 package com.quitbuddy.notifications;
 
+import static com.quitbuddy.notifications.SyncScheduler.setExactSafe;
+
 import android.app.AlarmManager;
 import android.content.Context;
 
@@ -64,8 +66,16 @@ public class HighRiskAnalysisWorker extends Worker {
             if (trigger.before(Calendar.getInstance())) {
                 trigger.add(Calendar.DAY_OF_YEAR, 1);
             }
-            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger.getTimeInMillis(),
-                    SyncScheduler.createHighRiskPendingIntent(context, i, 10));
+//            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger.getTimeInMillis(),
+//                    SyncScheduler.createHighRiskPendingIntent(context, i, 10));
+
+            setExactSafe(
+                    context,
+                    manager,
+                    AlarmManager.RTC_WAKEUP,
+                    trigger.getTimeInMillis(),
+                    SyncScheduler.createHighRiskPendingIntent(context, i, 10)
+            );
         }
         return Result.success();
     }

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,7 @@ public final class SyncScheduler {
             List<String> times = plan.reminderTimes;
             for (int i = 0; i < times.size(); i++) {
                 scheduleSingleReminderInternal(context, times.get(i), i, manager);
+
             }
         });
     }
@@ -78,7 +80,9 @@ public final class SyncScheduler {
         intent.putExtra(ReminderReceiver.EXTRA_TIME, time);
         intent.putExtra("index", index);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REMINDER_BASE_ID + index, intent, pendingIntentFlags());
-        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        setAlarmCompat(context, manager, calendar.getTimeInMillis(), pendingIntent);
+
     }
 
     public static void scheduleMilestones(Context context) {
@@ -119,7 +123,9 @@ public final class SyncScheduler {
         Intent intent = new Intent(context, MilestoneReceiver.class);
         intent.putExtra(MilestoneReceiver.EXTRA_MESSAGE, "恭喜你达成 " + milestone + " 天无烟！");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, MILESTONE_ID, intent, pendingIntentFlags());
-        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        setAlarmCompat(context, manager, calendar.getTimeInMillis(), pendingIntent);
+
     }
 
     public static void scheduleHighRiskAnalysis(Context context) {
@@ -153,5 +159,60 @@ public final class SyncScheduler {
             flags |= PendingIntent.FLAG_IMMUTABLE;
         }
         return flags;
+    }
+
+    // 统一设置闹钟；能精确就精确，不能就降级为非精确
+    private static void setAlarmCompat(Context context, AlarmManager manager, long triggerAtMillis, PendingIntent pi) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
+            if (manager.canScheduleExactAlarms()) {
+                manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+
+            } else {
+                // 没拿到精确闹钟权限 -> 降级（系统可小幅漂移时间）
+                manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 23–30
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // 19–22
+            manager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+        } else { // 18-
+            manager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+        }
+    }
+
+    static void setExactSafe(
+            Context context,
+            AlarmManager alarmManager,
+            int type,
+            long triggerAtMillis,
+            PendingIntent pi
+    ) {
+        if (alarmManager == null) return;
+
+        // Android 12+：没拿到精确定时权限时，退化为非精确闹钟，避免 SecurityException
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager am = context.getSystemService(AlarmManager.class);
+            if (am == null || !am.canScheduleExactAlarms()) {
+                // 没权限 -> 非精确
+                alarmManager.setAndAllowWhileIdle(type, triggerAtMillis, pi);
+                return;
+            }
+        }
+
+        // 有权限（或 Android 11-）再走精确定时
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(type, triggerAtMillis, pi);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(type, triggerAtMillis, pi);
+        } else {
+            alarmManager.set(type, triggerAtMillis, pi);
+        }
+    }
+    /** 新增：授权成功后统一补调度（按你项目里已有的调度入口来补即可） */
+    public static void rescheduleAfterPermission(Context context) {
+        // 这些方法名称按你现有的为准，下面是根据你项目里出现过的调用来写的
+        scheduleDailyReminders(context);
+        scheduleMilestones(context);
+        scheduleHighRiskAnalysis(context);
     }
 }

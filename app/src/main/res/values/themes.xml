@@ -10,4 +10,8 @@
         <item name="android:background">@drawable/widget_preview</item>
         <item name="android:padding">16dp</item>
     </style>
+    <style name="Widget.QuitBuddy">
+        <item name="android:background">@drawable/widget_preview</item>
+        <item name="android:padding">16dp</item>
+    </style>
 </resources>

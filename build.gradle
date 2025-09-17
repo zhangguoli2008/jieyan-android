@@ -1,21 +1,27 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.2'
-    }
+//buildscript {
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:8.5.2'
+////        classpath 'com.amazon.ion:ion-java:1.+'
+//    }
+//}
+plugins {
+    id "com.android.application" version "8.6.1" apply false
+    id "com.android.library"     version "8.6.1" apply false
+    // 纯 Java 项目不需要 Kotlin 插件；如果后续加 Kotlin 再加：
+    // id "org.jetbrains.kotlin.android" version "2.0.20" apply false
 }
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-tasks.register('clean', Delete) {
-    delete rootProject.buildDir
-}
+//allprojects {
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//}
+//
+//tasks.register('clean', Delete) {
+//    delete rootProject.buildDir
+//}
