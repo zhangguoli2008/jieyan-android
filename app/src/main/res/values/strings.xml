@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QuitBuddy</string>
+    <string name="action_save">保存</string>
+    <string name="action_cancel">取消</string>
+    <string name="dashboard_title">今日进度</string>
+    <string name="onboarding_title">开始你的计划</string>
+    <string name="craving_log_title">记录渴求</string>
+    <string name="craving_history_title">历史记录</string>
+    <string name="micro_intervention_title">微干预工具</string>
+    <string name="settings_title">设置</string>
+    <string name="achievements_title">成就</string>
+    <string name="export_title">数据导出</string>
+    <string name="error_missing_fields">请填写所有必填项</string>
+    <string name="msg_plan_saved">计划已保存</string>
+    <string name="msg_craving_saved">渴求已记录</string>
+    <string name="label_money_saved">节省金额</string>
+    <string name="label_cigs_avoided">避免香烟</string>
+    <string name="label_smoke_free_days">无烟天数</string>
+    <string name="label_minutes_recovered">回收时间</string>
+    <string name="action_log_craving">记录渴求</string>
+    <string name="action_open_intervention">微干预</string>
+    <string name="action_view_history">查看历史</string>
+    <string name="action_open_settings">设置</string>
+    <string name="action_view_achievements">成就</string>
+    <string name="action_export">导出数据</string>
+    <string name="label_intensity">强度</string>
+    <string name="label_trigger">触发情景</string>
+    <string name="label_did_smoke">是否吸烟</string>
+    <string name="label_note">备注</string>
+    <string name="label_breathing">呼吸练习</string>
+    <string name="label_delay">延迟计时</string>
+    <string name="label_substitution">替代建议</string>
+    <string name="msg_export_success">导出成功：%1$s</string>
+    <string name="msg_export_failed">导出失败</string>
+    <string name="msg_permission_required">请授予通知权限以确保提醒</string>
+</resources>
