@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.preference.SwitchPreferenceCompat
+        android:key="pref_sync"
+        android:title="云同步"
+        android:summary="开启后将在多设备间同步数据" />
+
+    <androidx.preference.ListPreference
+        android:key="pref_theme"
+        android:title="主题"
+        android:entries="@array/theme_entries"
+        android:entryValues="@array/theme_values"
+        android:defaultValue="system" />
+
+    <androidx.preference.Preference
+        android:key="pref_export"
+        android:title="导出数据"
+        android:summary="导出 CSV 文件" />
+
+</PreferenceScreen>

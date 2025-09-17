@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="craving_triggers">
+        <item>咖啡</item>
+        <item>酒精</item>
+        <item>压力</item>
+        <item>社交</item>
+        <item>驾驶</item>
+        <item>独处</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="substitution_suggestions">
+        <item>喝一杯温水，慢慢咽下</item>
+        <item>深呼吸四次，感受空气流动</item>
+        <item>给朋友发送一条消息，转移注意力</item>
+        <item>嚼无糖口香糖或吃水果</item>
+        <item>快走五分钟，活动身体</item>
+        <item>列出戒烟收益三条并朗读</item>
+    </string-array>
+    <string-array name="theme_entries">
+        <item>跟随系统</item>
+        <item>浅色</item>
+        <item>深色</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+</resources>
