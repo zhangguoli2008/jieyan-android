@@ -1,169 +1,118 @@
 package com.quitbuddy.ui.intervention;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.quitbuddy.R;
+import com.quitbuddy.ui.ThemeManager;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class MicroInterventionActivity extends AppCompatActivity {
 
-    private static final long BREATHING_DURATION = 60000L;
-    private static final long DELAY_DURATION = 180000L;
-
     private TextView textBreathing;
     private TextView textTimer;
     private TextView textSuggestion;
-    private CountDownTimer breathingTimer;
-    private CountDownTimer delayTimer;
-    private long breathingRemaining = BREATHING_DURATION;
-    private long delayRemaining = DELAY_DURATION;
-    private boolean breathingRunning = false;
-    private boolean delayRunning = false;
+    private CircularProgressIndicator indicatorBreathing;
+    private LinearProgressIndicator indicatorDelay;
+    private MicroInterventionViewModel viewModel;
     private final Random random = new Random();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_micro_intervention);
-        if (savedInstanceState != null) {
-            breathingRemaining = savedInstanceState.getLong("breathingRemaining", BREATHING_DURATION);
-            delayRemaining = savedInstanceState.getLong("delayRemaining", DELAY_DURATION);
-            breathingRunning = savedInstanceState.getBoolean("breathingRunning", false);
-            delayRunning = savedInstanceState.getBoolean("delayRunning", false);
-        }
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24);
+        ThemeManager.tintToolbar(toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
         bindViews();
-        updateTimerText();
-        if (breathingRunning) {
-            startBreathing();
-        }
-        if (delayRunning) {
-            startDelayTimer();
-        }
+        viewModel = new ViewModelProvider(this).get(MicroInterventionViewModel.class);
+        observeViewModel();
+        refreshSuggestion();
     }
 
     private void bindViews() {
         textBreathing = findViewById(R.id.textBreathing);
         textTimer = findViewById(R.id.textTimer);
         textSuggestion = findViewById(R.id.textSuggestion);
+        indicatorBreathing = findViewById(R.id.indicatorBreathing);
+        indicatorDelay = findViewById(R.id.indicatorDelay);
         MaterialButton buttonBreathing = findViewById(R.id.buttonBreathing);
+        MaterialButton buttonBreathingReset = findViewById(R.id.buttonBreathingReset);
         MaterialButton buttonTimerStart = findViewById(R.id.buttonTimerStart);
         MaterialButton buttonTimerPause = findViewById(R.id.buttonTimerPause);
         MaterialButton buttonSuggestion = findViewById(R.id.buttonSuggestion);
 
-        buttonBreathing.setOnClickListener(v -> {
-            breathingRemaining = BREATHING_DURATION;
-            startBreathing();
-        });
-        buttonTimerStart.setOnClickListener(v -> startDelayTimer());
-        buttonTimerPause.setOnClickListener(v -> pauseDelayTimer());
+        buttonBreathing.setOnClickListener(v -> viewModel.startBreathing());
+        buttonBreathingReset.setOnClickListener(v -> viewModel.resetBreathing());
+        buttonTimerStart.setOnClickListener(v -> viewModel.startDelay());
+        buttonTimerPause.setOnClickListener(v -> viewModel.pauseDelay());
         buttonSuggestion.setOnClickListener(v -> refreshSuggestion());
-        refreshSuggestion();
     }
 
-    private void startBreathing() {
-        cancelBreathing();
-        breathingRunning = true;
-        breathingTimer = new CountDownTimer(breathingRemaining, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                breathingRemaining = millisUntilFinished;
-                long elapsed = BREATHING_DURATION - breathingRemaining;
-                int phase = (int) ((elapsed / 4000) % 4);
-                switch (phase) {
-                    case 0:
-                        textBreathing.setText("吸气 4 秒");
-                        break;
-                    case 1:
-                        textBreathing.setText("屏息 4 秒");
-                        break;
-                    case 2:
-                        textBreathing.setText("呼气 4 秒");
-                        break;
-                    default:
-                        textBreathing.setText("停留 4 秒");
-                        break;
-                }
+    private void observeViewModel() {
+        viewModel.getBreathingRemaining().observe(this, this::updateBreathingText);
+        viewModel.getDelayRemaining().observe(this, this::updateDelayText);
+        viewModel.getDelayFinished().observe(this, finished -> {
+            if (Boolean.TRUE.equals(finished)) {
+                Snackbar.make(textTimer, R.string.micro_intervention_delay_snackbar, Snackbar.LENGTH_LONG).show();
+                viewModel.consumeDelayFinished();
             }
-
-            @Override
-            public void onFinish() {
-                breathingRunning = false;
-                textBreathing.setText("完成！为自己点赞");
-            }
-        }.start();
+        });
     }
 
-    private void cancelBreathing() {
-        if (breathingTimer != null) {
-            breathingTimer.cancel();
-            breathingTimer = null;
+    private void updateBreathingText(long remaining) {
+        if (remaining <= 0) {
+            textBreathing.setText(R.string.micro_intervention_breath_complete);
+            indicatorBreathing.setProgressCompat(100, true);
+            return;
         }
-    }
-
-    private void startDelayTimer() {
-        cancelDelay();
-        delayRunning = true;
-        delayTimer = new CountDownTimer(delayRemaining, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                delayRemaining = millisUntilFinished;
-                updateTimerText();
-            }
-
-            @Override
-            public void onFinish() {
-                delayRunning = false;
-                delayRemaining = DELAY_DURATION;
-                updateTimerText();
-                textTimer.setText("完成！做点开心的事吧");
-            }
-        }.start();
-    }
-
-    private void pauseDelayTimer() {
-        cancelDelay();
-        delayRunning = false;
-    }
-
-    private void cancelDelay() {
-        if (delayTimer != null) {
-            delayTimer.cancel();
-            delayTimer = null;
+        long elapsed = MicroInterventionViewModel.BREATHING_DURATION - remaining;
+        int phase = (int) ((elapsed / 4000) % 4);
+        switch (phase) {
+            case 0:
+                textBreathing.setText(R.string.micro_intervention_breath_inhale);
+                break;
+            case 1:
+                textBreathing.setText(R.string.micro_intervention_breath_hold);
+                break;
+            case 2:
+                textBreathing.setText(R.string.micro_intervention_breath_exhale);
+                break;
+            default:
+                textBreathing.setText(R.string.micro_intervention_breath_rest);
+                break;
         }
+        int progress = (int) Math.min(100, Math.max(0,
+                (MicroInterventionViewModel.BREATHING_DURATION - remaining) * 100 / MicroInterventionViewModel.BREATHING_DURATION));
+        indicatorBreathing.setProgressCompat(progress, true);
     }
 
-    private void updateTimerText() {
-        long seconds = delayRemaining / 1000;
+    private void updateDelayText(long remaining) {
+        long seconds = remaining / 1000;
         long minutes = seconds / 60;
         long remainingSeconds = seconds % 60;
-        textTimer.setText(String.format("%02d:%02d", minutes, remainingSeconds));
+        String formatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, remainingSeconds);
+        textTimer.setText(formatted);
+        int progress = (int) Math.min(100, Math.max(0,
+                (MicroInterventionViewModel.DELAY_DURATION - remaining) * 100 / MicroInterventionViewModel.DELAY_DURATION));
+        indicatorDelay.setProgressCompat(progress, true);
     }
 
     private void refreshSuggestion() {
         String[] suggestions = getResources().getStringArray(R.array.substitution_suggestions);
         textSuggestion.setText(suggestions[random.nextInt(suggestions.length)]);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        cancelBreathing();
-        cancelDelay();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("breathingRemaining", breathingRemaining);
-        outState.putLong("delayRemaining", delayRemaining);
-        outState.putBoolean("breathingRunning", breathingRunning);
-        outState.putBoolean("delayRunning", delayRunning);
     }
 }

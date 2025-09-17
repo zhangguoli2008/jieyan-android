@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundLight">#FFF5F5F5</color>
     <color name="backgroundDark">#FF121212</color>
+    <color name="accent_teal">#1ABC9C</color>
+    <color name="accent_sunrise">#FF7043</color>
+    <color name="accent_ocean">#3D5AFE</color>
 </resources>

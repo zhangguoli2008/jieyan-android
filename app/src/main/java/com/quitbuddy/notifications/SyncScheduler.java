@@ -55,6 +55,24 @@ public final class SyncScheduler {
         });
     }
 
+    public static void cancelDailyReminders(Context context) {
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            QuitPlanEntity plan = AppDatabase.getInstance(context).quitPlanDao().getPlanSync();
+            if (plan == null) {
+                return;
+            }
+            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (manager == null) {
+                return;
+            }
+            for (int i = 0; i < plan.reminderTimes.size(); i++) {
+                PendingIntent pi = PendingIntent.getBroadcast(context, REMINDER_BASE_ID + i,
+                        new Intent(context, ReminderReceiver.class), pendingIntentFlags());
+                manager.cancel(pi);
+            }
+        });
+    }
+
     public static void scheduleSingleReminder(Context context, String time, int index) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (manager == null || TextUtils.isEmpty(time)) {

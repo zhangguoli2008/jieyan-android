@@ -1,6 +1,8 @@
 package com.quitbuddy.data.repo;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,6 +13,7 @@ import com.quitbuddy.data.dao.QuitPlanDao;
 import com.quitbuddy.data.model.Achievement;
 import com.quitbuddy.data.model.CravingEventEntity;
 import com.quitbuddy.data.model.DashboardSnapshot;
+import com.quitbuddy.data.model.MilestoneCelebration;
 import com.quitbuddy.data.model.QuitPlanEntity;
 import com.quitbuddy.notifications.SyncScheduler;
 import com.quitbuddy.widget.DashboardWidgetProvider;
@@ -34,6 +37,10 @@ public class QuitBuddyRepository {
     private final CravingEventDao eventDao;
     private final AppExecutors executors;
     private final Context appContext;
+    private final SharedPreferences celebrationPrefs;
+    private static final String PREFS_CELEBRATION = "celebration_prefs";
+    private static final String KEY_LAST_CELEBRATED = "lastCelebrated";
+    private static final int[] MILESTONES = new int[]{3, 7, 14, 30, 90, 180, 365};
 
     private QuitBuddyRepository(Context context) {
         this.appContext = context.getApplicationContext();
@@ -41,6 +48,7 @@ public class QuitBuddyRepository {
         this.planDao = database.quitPlanDao();
         this.eventDao = database.cravingEventDao();
         this.executors = AppExecutors.getInstance();
+        this.celebrationPrefs = this.appContext.getSharedPreferences(PREFS_CELEBRATION, Context.MODE_PRIVATE);
     }
 
     public static QuitBuddyRepository getInstance(Context context) {
@@ -87,7 +95,7 @@ public class QuitBuddyRepository {
     public void calculateSnapshot(Callback<DashboardSnapshot> callback) {
         executors.diskIO().execute(() -> {
             QuitPlanEntity plan = planDao.getPlanSync();
-            DashboardSnapshot snapshot = plan == null ? new DashboardSnapshot(0, 0, 0, 0)
+            DashboardSnapshot snapshot = plan == null ? DashboardSnapshot.empty()
                     : buildSnapshot(plan);
             executors.mainThread().execute(() -> callback.onResult(snapshot));
         });
@@ -102,7 +110,37 @@ public class QuitBuddyRepository {
         long avoided = Math.max(0, elapsedCigs - smoked);
         double moneySaved = plan.cigsPerPack == 0 ? 0 : (double) avoided / plan.cigsPerPack * plan.pricePerPack;
         long minutesRecovered = avoided * 8L;
-        return new DashboardSnapshot(days, avoided, moneySaved, minutesRecovered);
+        long cravingsLogged = eventDao.count();
+        DashboardSnapshot.MilestoneInfo milestoneInfo = computeNextMilestone(start, days);
+        double milestoneProgress = milestoneInfo == null || milestoneInfo.completed
+                ? 1f
+                : Math.min(1f, (double) days / milestoneInfo.milestoneDays);
+        return new DashboardSnapshot(days, avoided, moneySaved, minutesRecovered, plan.mode,
+                milestoneInfo, milestoneProgress, cravingsLogged);
+    }
+
+    private DashboardSnapshot.MilestoneInfo computeNextMilestone(ZonedDateTime start, long days) {
+        for (int milestone : MILESTONES) {
+            if (days < milestone) {
+                ZonedDateTime target = start.plusDays(milestone);
+                long remaining = Math.max(0, milestone - days);
+                return new DashboardSnapshot.MilestoneInfo(milestone, target, remaining, false);
+            }
+        }
+        if (MILESTONES.length == 0) {
+            return null;
+        }
+        int last = MILESTONES[MILESTONES.length - 1];
+        ZonedDateTime target = start.plusDays(last);
+        return new DashboardSnapshot.MilestoneInfo(last, target, 0, true);
+    }
+
+    public DashboardSnapshot getSnapshotSync() {
+        QuitPlanEntity plan = planDao.getPlanSync();
+        if (plan == null) {
+            return DashboardSnapshot.empty();
+        }
+        return buildSnapshot(plan);
     }
 
     public interface Callback<T> {
@@ -116,8 +154,7 @@ public class QuitBuddyRepository {
             if (plan != null) {
                 DashboardSnapshot snapshot = buildSnapshot(plan);
                 long days = snapshot.smokeFreeDays;
-                int[] milestones = new int[]{3, 7, 14, 30, 90, 180, 365};
-                for (int milestone : milestones) {
+                for (int milestone : MILESTONES) {
                     boolean achieved = days >= milestone;
                     achievements.add(new Achievement(milestone + " 天", achieved,
                             achieved ? "已达成" : "继续坚持"));
@@ -161,5 +198,72 @@ public class QuitBuddyRepository {
             return "";
         }
         return value.replace('\n', ' ').replace(',', ';');
+    }
+
+    public void checkPendingCelebration(Callback<MilestoneCelebration> callback) {
+        executors.diskIO().execute(() -> {
+            QuitPlanEntity plan = planDao.getPlanSync();
+            MilestoneCelebration celebration = null;
+            if (plan != null) {
+                DashboardSnapshot snapshot = buildSnapshot(plan);
+                int lastCelebrated = celebrationPrefs.getInt(KEY_LAST_CELEBRATED, 0);
+                int unlocked = 0;
+                for (int milestone : MILESTONES) {
+                    if (snapshot.smokeFreeDays >= milestone) {
+                        unlocked = milestone;
+                    }
+                }
+                if (unlocked > lastCelebrated) {
+                    celebration = new MilestoneCelebration(unlocked, snapshot.smokeFreeDays,
+                            snapshot.nextMilestone != null ? snapshot.nextMilestone.targetDate : ZonedDateTime.now());
+                }
+            }
+            MilestoneCelebration result = celebration;
+            executors.mainThread().execute(() -> callback.onResult(result));
+        });
+    }
+
+    public void markCelebrated(int milestoneDays) {
+        celebrationPrefs.edit().putInt(KEY_LAST_CELEBRATED, milestoneDays).apply();
+    }
+
+    public void clearCravings(Runnable completion) {
+        executors.diskIO().execute(() -> {
+            eventDao.clearAll();
+            DashboardWidgetProvider.updateWidget(appContext);
+            if (completion != null) {
+                executors.mainThread().execute(completion);
+            }
+        });
+    }
+
+    public void updateReminderTime(int index, String time, Runnable completion) {
+        executors.diskIO().execute(() -> {
+            QuitPlanEntity plan = planDao.getPlanSync();
+            if (plan == null) {
+                if (completion != null) {
+                    executors.mainThread().execute(completion);
+                }
+                return;
+            }
+            List<String> times = new ArrayList<>(plan.reminderTimes);
+            while (times.size() <= index) {
+                times.add(time);
+            }
+            times.set(index, time);
+            plan.reminderTimes = times;
+            planDao.insert(plan);
+            SyncScheduler.scheduleSingleReminder(appContext, time, index);
+            if (completion != null) {
+                executors.mainThread().execute(completion);
+            }
+        });
+    }
+
+    public LiveData<List<CravingEventEntity>> observeFilteredCravings(String trigger, Integer didSmoke, String query) {
+        String normalizedTrigger = TextUtils.isEmpty(trigger) || "all".equals(trigger) ? null : trigger;
+        Integer normalizedDidSmoke = didSmoke;
+        String normalizedQuery = TextUtils.isEmpty(query) ? null : query;
+        return eventDao.observeFiltered(normalizedTrigger, normalizedDidSmoke, normalizedQuery);
     }
 }
